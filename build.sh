@@ -165,6 +165,7 @@ echo "==> Building ISO..."
 xorriso -as mkisofs \
     -R -J -joliet-long \
     -V "NGSTEP" \
+    -partition_offset 16 \
     -b boot/grub/bios.img \
         -no-emul-boot \
         -boot-load-size 4 \
@@ -175,6 +176,7 @@ xorriso -as mkisofs \
     -e boot/grub/efi.img \
         -no-emul-boot \
         -isohybrid-gpt-basdat \
+    -appended_part_as_gpt \
     -o "${ISO_NAME}" \
     "${WORK}/iso"
 
