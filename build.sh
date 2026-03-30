@@ -92,6 +92,13 @@ chroot "${WORK}/rootfs" update-rc.d loginwindow defaults
 # Initialize directory services database
 chroot "${WORK}/rootfs" /System/Library/Tools/dscli init
 
+# Final cleanup before squashfs
+chroot "${WORK}/rootfs" /bin/sh -c "
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+    rm -rf /tmp/* /var/tmp/*
+"
+
 # Remove policy-rc.d
 rm -f "${WORK}/rootfs/usr/sbin/policy-rc.d"
 
