@@ -1,0 +1,44 @@
+name: Build ngstep ISO
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-24.04
+    container:
+      image: devuan/devuan:excalibur
+      volumes:
+        - /proc:/proc
+      options: --privileged
+    name: Build ISO
+    steps:
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y \
+            git debootstrap squashfs-tools xorriso \
+            grub-common grub-pc-bin grub-efi-amd64-bin \
+            mtools dosfstools wget
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build ISO
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload ISO
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          ls -lh *.iso
+          wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+          bash upload.sh *.iso

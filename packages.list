@@ -1,0 +1,28 @@
+# Base system
+linux-image-amd64
+live-boot
+live-config
+live-config-sysvinit
+sysvinit-core
+
+# Boot
+grub-common
+grub-pc-bin
+grub-efi-amd64-bin
+plymouth
+
+# Networking
+ifupdown
+iproute2
+iputils-ping
+dhcpcd
+
+# Core utilities
+sudo
+curl
+wget
+zsh
+nano
+ca-certificates
+locales
+console-setup
