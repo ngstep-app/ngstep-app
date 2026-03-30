@@ -90,7 +90,7 @@ chroot "${WORK}/rootfs" update-rc.d dshelper defaults
 chroot "${WORK}/rootfs" update-rc.d loginwindow defaults
 
 # Initialize directory services database
-chroot "${WORK}/rootfs" dscli init
+chroot "${WORK}/rootfs" /System/Library/Tools/dscli init
 
 # Remove policy-rc.d
 rm -f "${WORK}/rootfs/usr/sbin/policy-rc.d"
