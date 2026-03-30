@@ -21,6 +21,8 @@ dhcpcd
 sudo
 curl
 wget
+git
+make
 zsh
 nano
 ca-certificates

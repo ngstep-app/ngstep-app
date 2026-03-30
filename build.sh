@@ -75,8 +75,19 @@ chroot "${WORK}/rootfs" /bin/sh -c "
     rm -rf /var/lib/apt/lists/*
 "
 
-# Set default shell to zsh
-chroot "${WORK}/rootfs" chsh -s /usr/bin/zsh root
+# === Step 3b: Install Gershwin ===
+echo "==> Installing Gershwin..."
+
+chroot "${WORK}/rootfs" /bin/sh -c "
+    git clone https://github.com/ngstep-app/gershwin-developer.git /Developer
+    /Developer/Library/Scripts/Bootstrap.sh
+    /Developer/Library/Scripts/Checkout.sh
+    cd /Developer && make install
+"
+
+# Enable Gershwin services for sysvinit
+chroot "${WORK}/rootfs" update-rc.d dshelper defaults
+chroot "${WORK}/rootfs" update-rc.d loginwindow defaults
 
 # Remove policy-rc.d
 rm -f "${WORK}/rootfs/usr/sbin/policy-rc.d"
