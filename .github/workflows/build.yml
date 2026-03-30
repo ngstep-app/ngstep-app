@@ -24,7 +24,7 @@ jobs:
           apt-get install -y \
             git debootstrap squashfs-tools xorriso \
             grub-common grub-pc-bin grub-efi-amd64-bin \
-            mtools dosfstools wget
+            mtools dosfstools wget curl
 
       - name: Checkout code
         uses: actions/checkout@v4
