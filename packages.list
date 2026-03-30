@@ -24,5 +24,10 @@ wget
 zsh
 nano
 ca-certificates
+gnupg
 locales
 console-setup
+
+# Display server (XLibre)
+xlibre
+xlibre-archive-keyring

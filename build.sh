@@ -21,10 +21,11 @@ cat > "${WORK}/rootfs/etc/apt/sources.list" << EOF
 deb ${MIRROR} ${DIST} main non-free-firmware
 deb ${MIRROR} ${DIST}-security main non-free-firmware
 deb ${MIRROR} ${DIST}-updates main non-free-firmware
+deb ${MIRROR} ${DIST}-backports main non-free-firmware
 EOF
 
-# === Step 3: Chroot and install packages ===
-echo "==> Installing packages..."
+# === Step 2b: Add XLibre repository ===
+echo "==> Adding XLibre repository..."
 
 # Mount required filesystems for chroot
 mount --bind /dev "${WORK}/rootfs/dev"
@@ -38,6 +39,30 @@ cat > "${WORK}/rootfs/usr/sbin/policy-rc.d" << 'EOF'
 exit 101
 EOF
 chmod +x "${WORK}/rootfs/usr/sbin/policy-rc.d"
+
+# Install gnupg and curl to fetch and dearmor the XLibre key
+chroot "${WORK}/rootfs" /bin/sh -c "
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends gnupg curl ca-certificates
+"
+
+# Add XLibre GPG key
+curl -fsSL https://mrchicken.nexussfan.cz/publickey.asc | \
+    chroot "${WORK}/rootfs" gpg --dearmor -o /usr/share/keyrings/NexusSfan.pgp
+chmod a+r "${WORK}/rootfs/usr/share/keyrings/NexusSfan.pgp"
+
+# Add XLibre sources
+cat > "${WORK}/rootfs/etc/apt/sources.list.d/xlibre-debian.sources" << 'EOF'
+Types: deb
+URIs: https://xlibre-debian.github.io/devuan/
+Suites: main
+Components: stable
+Signed-By: /usr/share/keyrings/NexusSfan.pgp
+EOF
+
+# === Step 3: Chroot and install packages ===
+echo "==> Installing packages..."
 
 # Read package list (strip comments and blank lines)
 PACKAGES=$(grep -v '^#' packages.list | grep -v '^$' | tr '\n' ' ')
