@@ -175,7 +175,7 @@ xorriso -as mkisofs \
     -eltorito-alt-boot \
     -e boot/grub/efi.img \
         -no-emul-boot \
-        -isohybrid-gpt-basdat \
+    -append_partition 2 0xef "${WORK}/iso/boot/grub/efi.img" \
     -appended_part_as_gpt \
     -o "${ISO_NAME}" \
     "${WORK}/iso"
