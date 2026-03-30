@@ -85,8 +85,8 @@ cp grub.cfg "${WORK}/iso/boot/grub/grub.cfg"
 grub-mkstandalone \
     --format=i386-pc \
     --output="${WORK}/bios.img" \
-    --install-modules="linux normal iso9660 biosdisk memdisk search tar ls" \
-    --modules="linux normal iso9660 biosdisk search" \
+    --install-modules="linux normal iso9660 biosdisk memdisk search tar ls all_video font gfxterm part_gpt part_msdos" \
+    --modules="linux normal iso9660 biosdisk search part_gpt part_msdos" \
     --locales="" \
     --fonts="" \
     "boot/grub/grub.cfg=${WORK}/iso/boot/grub/grub.cfg"
@@ -98,6 +98,8 @@ cat /usr/lib/grub/i386-pc/cdboot.img "${WORK}/bios.img" > "${WORK}/iso/boot/grub
 grub-mkstandalone \
     --format=x86_64-efi \
     --output="${WORK}/bootx64.efi" \
+    --install-modules="linux normal iso9660 search tar ls all_video font gfxterm part_gpt part_msdos fat efi_gop efi_uga" \
+    --modules="linux normal iso9660 search part_gpt part_msdos fat efi_gop" \
     --locales="" \
     --fonts="" \
     "boot/grub/grub.cfg=${WORK}/iso/boot/grub/grub.cfg"
