@@ -87,7 +87,11 @@ chroot "${WORK}/rootfs" /bin/sh -c "
 
 # Enable Gershwin services for sysvinit
 chroot "${WORK}/rootfs" update-rc.d dshelper defaults
-chroot "${WORK}/rootfs" update-rc.d loginwindow defaults
+
+# Configure inittab for LoginWindow (respawn at runlevel 5)
+sed -i.bak -E 's/^id:[0-9]+:initdefault:/id:5:initdefault:/' "${WORK}/rootfs/etc/inittab"
+grep -q '^lw:5:respawn:/System/Library/Scripts/LoginWindow.sh' "${WORK}/rootfs/etc/inittab" || \
+    echo 'lw:5:respawn:/System/Library/Scripts/LoginWindow.sh' >> "${WORK}/rootfs/etc/inittab"
 
 # Initialize directory services database
 chroot "${WORK}/rootfs" /System/Library/Tools/dscli init
