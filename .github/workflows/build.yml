@@ -14,16 +14,11 @@ jobs:
       matrix:
         runner: [ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.runner }}
-    container:
-      image: devuan/devuan:excalibur
-      volumes:
-        - /proc:/proc
-      options: --privileged
     name: Build ISO (${{ matrix.runner }})
     steps:
       - name: Install build tools
         run: |
-          apt-get update
+          sudo apt-get update
           arch=$(uname -m)
           case "$arch" in
             x86_64|i?86)
@@ -33,7 +28,7 @@ jobs:
               GRUB_PKGS="grub-efi-arm64-bin"
               ;;
           esac
-          apt-get install -y \
+          sudo apt-get install -y \
             git debootstrap squashfs-tools xorriso \
             grub-common $GRUB_PKGS \
             mtools dosfstools wget curl
@@ -44,7 +39,7 @@ jobs:
       - name: Build ISO
         run: |
           chmod +x build.sh
-          ./build.sh
+          sudo ./build.sh
 
       - name: Upload ISO
         env:
