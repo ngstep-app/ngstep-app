@@ -12,34 +12,28 @@ jobs:
   build-iso:
     strategy:
       matrix:
-        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        include:
+          - runner: ubuntu-24.04
+            container: ghcr.io/ngstep-app/devuan-amd64:latest
+            name: devuan-amd64
+          - runner: ubuntu-24.04-arm
+            container: ghcr.io/ngstep-app/devuan-arm64:latest
+            name: devuan-arm64
     runs-on: ${{ matrix.runner }}
-    name: Build ISO (${{ matrix.runner }})
+    container:
+      image: ${{ matrix.container }}
+      volumes:
+        - /proc:/proc
+      options: --privileged
+    name: Build ISO (${{ matrix.name }})
     steps:
-      - name: Install build tools
-        run: |
-          sudo apt-get update
-          arch=$(uname -m)
-          case "$arch" in
-            x86_64|i?86)
-              GRUB_PKGS="grub-pc-bin grub-efi-amd64-bin"
-              ;;
-            aarch64|arm64)
-              GRUB_PKGS="grub-efi-arm64-bin"
-              ;;
-          esac
-          sudo apt-get install -y \
-            git debootstrap squashfs-tools xorriso \
-            grub-common $GRUB_PKGS \
-            mtools dosfstools wget curl
-
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Build ISO
         run: |
           chmod +x build.sh
-          sudo ./build.sh
+          ./build.sh
 
       - name: Upload ISO
         env:
