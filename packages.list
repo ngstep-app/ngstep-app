@@ -1,5 +1,6 @@
 # Base system
-linux-image-amd64
+#x86_64 linux-image-amd64
+#aarch64 linux-image-arm64
 live-boot
 live-config
 live-config-sysvinit
@@ -7,8 +8,9 @@ sysvinit-core
 
 # Boot
 grub-common
-grub-pc-bin
-grub-efi-amd64-bin
+#x86_64 grub-pc-bin
+#x86_64 grub-efi-amd64-bin
+#aarch64 grub-efi-arm64-bin
 plymouth
 
 # Networking

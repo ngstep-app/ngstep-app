@@ -10,20 +10,32 @@ permissions:
 
 jobs:
   build-iso:
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
     container:
       image: devuan/devuan:excalibur
       volumes:
         - /proc:/proc
       options: --privileged
-    name: Build ISO
+    name: Build ISO (${{ matrix.runner }})
     steps:
       - name: Install build tools
         run: |
           apt-get update
+          arch=$(uname -m)
+          case "$arch" in
+            x86_64|i?86)
+              GRUB_PKGS="grub-pc-bin grub-efi-amd64-bin"
+              ;;
+            aarch64|arm64)
+              GRUB_PKGS="grub-efi-arm64-bin"
+              ;;
+          esac
           apt-get install -y \
             git debootstrap squashfs-tools xorriso \
-            grub-common grub-pc-bin grub-efi-amd64-bin \
+            grub-common $GRUB_PKGS \
             mtools dosfstools wget curl
 
       - name: Checkout code
