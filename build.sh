@@ -53,19 +53,17 @@ chroot "${WORK}/rootfs" /bin/sh -c "
 "
 
 # Add XLibre GPG key
-mkdir -p "${WORK}/rootfs/etc/apt/keyrings"
-curl -fsSL https://xlibre-deb.github.io/key.asc \
-    -o "${WORK}/rootfs/etc/apt/keyrings/xlibre-deb.asc"
-chmod a+r "${WORK}/rootfs/etc/apt/keyrings/xlibre-deb.asc"
+curl -fsSL https://mrchicken.nexussfan.cz/publickey.asc | \
+    chroot "${WORK}/rootfs" gpg --dearmor -o /usr/share/keyrings/NexusSfan.pgp
+chmod a+r "${WORK}/rootfs/usr/share/keyrings/NexusSfan.pgp"
 
 # Add XLibre sources
-cat > "${WORK}/rootfs/etc/apt/sources.list.d/xlibre-deb.sources" << EOF
+cat > "${WORK}/rootfs/etc/apt/sources.list.d/xlibre-debian.sources" << 'EOF'
 Types: deb
-URIs: https://xlibre-deb.github.io/devuan/
-Suites: ${DIST}
-Components: main
-Architectures: ${ARCH}
-Signed-By: /etc/apt/keyrings/xlibre-deb.asc
+URIs: https://xlibre-debian.github.io/devuan/
+Suites: main
+Components: stable
+Signed-By: /usr/share/keyrings/NexusSfan.pgp
 EOF
 
 # === Step 3: Chroot and install packages ===
