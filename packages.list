@@ -32,6 +32,5 @@ gnupg
 locales
 console-setup
 
-# Display server (XLibre)
-xlibre
-xlibre-archive-keyring
+# Display server (Xorg)
+xorg
