@@ -30,6 +30,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Diagnose XLibre key fetch
+        run: |
+          echo "==> Runner public IP:"
+          curl -fsS https://api.ipify.org || true
+          echo
+          echo "==> DNS for mrchicken.nexussfan.cz:"
+          getent hosts mrchicken.nexussfan.cz || true
+          echo "==> curl with default UA:"
+          curl -vI https://mrchicken.nexussfan.cz/publickey.asc 2>&1 | head -80 || true
+          echo "==> curl with browser UA:"
+          curl -vI -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" \
+            https://mrchicken.nexussfan.cz/publickey.asc 2>&1 | head -80 || true
+          echo "==> Response body (first 40 lines, browser UA):"
+          curl -fsSL -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" \
+            https://mrchicken.nexussfan.cz/publickey.asc 2>&1 | head -40 || true
+          echo "==> HTTP/1.1 forced:"
+          curl -vI --http1.1 https://mrchicken.nexussfan.cz/publickey.asc 2>&1 | head -40 || true
+
       - name: Build ISO
         run: |
           chmod +x build.sh
